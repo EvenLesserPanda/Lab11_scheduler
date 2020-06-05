@@ -1,6 +1,6 @@
 /*	Author: gyama009
  *  Partner(s) Name: 
- *	Lab Section:
+ *	Lab Section: 022
  *	Assignment: Lab #11 Exercise #2
  *	Exercise Description: [optional - include for your own benefit]
  *

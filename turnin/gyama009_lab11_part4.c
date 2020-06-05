@@ -1,7 +1,7 @@
 /*	Author: gyama009
  *  Partner(s) Name: 
- *	Lab Section:
- *	Assignment: Lab #11 Exercise #3
+ *	Lab Section: 022
+ *	Assignment: Lab #11 Exercise #4
  *	Exercise Description: [optional - include for your own benefit]
  *
  *	I acknowledge all content contained herein, excluding template or example
@@ -76,7 +76,7 @@ int pressSMTick(int state){
 					keypad = 'D';
 					break;
 				case '*':
-					keypad = 'E';
+					keypad = '*';
 					break;
 				case '0':
 					keypad = '0';
@@ -162,12 +162,13 @@ int main() {
 
 	const char start = -1;
 
-	// Task 1 (everything)
+	// Task 1
 	task1.state = start; // Task initial state.
 	task1.period = 10; // Task Period
 	task1.elapsedTime = task1.period; // Task current elapsed time.
 	task1.TickFct = &pressSMTick; // Function pointer for the tick.
 
+	//Task 2
 	task2.state = start; // Task initial state.
 	task2.period = 10; // Task Period
 	task2.elapsedTime = task2.period; // Task current elapsed time.
