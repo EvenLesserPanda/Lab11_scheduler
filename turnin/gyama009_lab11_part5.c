@@ -1,7 +1,7 @@
 /*	Author: gyama009
  *  Partner(s) Name: 
  *	Lab Section: 022
- *	Assignment: Lab #11 Exercise #4
+ *	Assignment: Lab #11 Exercise #5
  *	Exercise Description: [optional - include for your own benefit]
  *
  *	I acknowledge all content contained herein, excluding template or example
@@ -55,7 +55,6 @@ int powerSMTick(int state){
 				state = power_offpress;
 			}
 			else if((~PINA & 0xFF) == 0x00){
-				//state = power_onrelease;
 				if(message != 0x01){
 					state = power_onrelease;
 				}
@@ -91,13 +90,17 @@ int powerSMTick(int state){
 }
 
 // Enumeration of States
-enum player_States {player_wait, player_action};
+enum player_States {player_init, player_wait, player_action};
 
 int playerSMTick(int state){
+	// Local Variables
 	switch(state){ // State machine transitions
+		case player_init:
+			player = 2;
+			state = player_wait;
+			break;
 		case player_wait:
 			if(power == 0x01){
-				player = 2;
 				state = player_action;
 			}
 			else if(power == 0x00){
@@ -119,10 +122,12 @@ int playerSMTick(int state){
 			}
 			break;
 		default:
-			state = player_wait;
+			state = player_init;
 			break;
 	}
 	switch(state){ // State machine actions
+		case player_init:
+			break;
 		case player_wait:
 			break;
 		case player_action:
@@ -132,10 +137,12 @@ int playerSMTick(int state){
 	return state;
 }
 
+// Enumeration of States
 enum enemy_States {enemy_init, enemy_wait, enemy_process, enemy_remove};
 
 int enemySMTick(int state){
-	switch(state){
+	// Local Variables
+	switch(state){ // State machine transitions
 		case enemy_init:
 			cnt1 = 9;
 			cnt2 = 29;
@@ -177,7 +184,7 @@ int enemySMTick(int state){
 			state = enemy_init;
 			break;
 	}
-	switch(state){
+	switch(state){ // State machine actions
 		case enemy_init:
 			LCD_Cursor(9);
 			LCD_WriteData('#');
@@ -204,6 +211,7 @@ int enemySMTick(int state){
 enum message_States{message_wait, message_process, message_message};
 
 int messageSMTick(int state){
+	// Local Variables
 	switch(state){ // State machine transitions
 		case message_wait:
 			if(power == 0x00){
@@ -269,32 +277,32 @@ int main() {
 
 	const char start = -1;
 
-	// Task 1
+	// Task 1: POWER TASK
 	task1.state = start; // Task initial state.
 	task1.period = 10; // Task Period
 	task1.elapsedTime = task1.period; // Task current elapsed time.
 	task1.TickFct = &powerSMTick; // Function pointer for the tick.
 	
-	// Task 2
+	// Task 2: PLAYER TASK
 	task2.state = start; // Task initial state.
-	task2.period = 10; // Task Period
+	task2.period = 2; // Task Period
 	task2.elapsedTime = task2.period; // Task current elapsed time.
 	task2.TickFct = &playerSMTick; // Function pointer for the tick.
 
-	// Task 3
+	// Task 3: ENEMY TASK
 	task3.state = start; // Task initial state.
-	task3.period = 100; // Task Period
+	task3.period = 30; // Task Period
 	task3.elapsedTime = task3.period; // Task current elapsed time.
 	task3.TickFct = &enemySMTick; // Function pointer for the tick.
 
-	// Task 4
+	// Task 4: MESSAGE TASK
 	task4.state = start; // Task initial state.
-	task4.period = 100; // Task Period
+	task4.period = 10; // Task Period
 	task4.elapsedTime = task4.period; // Task current elapsed time.
 	task4.TickFct = &messageSMTick; // Function pointer for the tick.
 
 	// Set the timer and turn it on
-	TimerSet(10);
+	TimerSet(2); // GCD
 	TimerOn();
 
 	unsigned short i; // Scheduler for-loop iterator
@@ -304,7 +312,7 @@ int main() {
 				tasks[i]->state = tasks[i]->TickFct(tasks[i]->state); // Set next state
 				tasks[i]->elapsedTime = 0; // Reset the elapsed time for next tick.
 			}
-			tasks[i]->elapsedTime += 10;
+			tasks[i]->elapsedTime += 2; // GCD
 		}
 		while(!TimerFlag);
 		TimerFlag = 0;
