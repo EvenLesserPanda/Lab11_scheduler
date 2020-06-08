@@ -110,11 +110,9 @@ int playerSMTick(int state){
 			}
 			else if(power == 0x01){
 				if((~PINA & 0xFF) == 0x02){
-					LCD_Cursor(2);
 					player = 2;
 				}
 				else if((~PINA & 0xFF) == 0x04){
-					LCD_Cursor(18);
 					player = 18;
 				}
 				state = player_action;
@@ -165,6 +163,11 @@ int enemySMTick(int state){
 				state = enemy_wait;
 			}
 			else if(power == 0x01){
+				LCD_Cursor(cnt1);
+	                        LCD_WriteData(' ');
+	                        LCD_Cursor(cnt2);
+	                        LCD_WriteData(' ');
+	                        LCD_Cursor(0);
 				cnt1 = (cnt1 == 1) ? 16 : (cnt1 - 1);
                                 cnt2 = (cnt2 == 17) ? 32 : (cnt2 - 1);
 				state = enemy_process;
@@ -187,18 +190,11 @@ int enemySMTick(int state){
 		case enemy_process:
 			LCD_Cursor(cnt1);
 			LCD_WriteData('#');
-			LCD_Cursor(0);
 			LCD_Cursor(cnt2);
 			LCD_WriteData('#');
 			LCD_Cursor(0);
 			break;
 		case enemy_remove:
-			LCD_Cursor(cnt1);
-			LCD_WriteData(' ');
-			LCD_Cursor(0);
-			LCD_Cursor(cnt2);
-			LCD_WriteData(' ');
-			LCD_Cursor(0);
 			break;
 	}
 	return state;
